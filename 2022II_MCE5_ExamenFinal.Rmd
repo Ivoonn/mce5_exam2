@@ -125,7 +125,7 @@ str(leishmania)
 summary(leishmania)
 ```
 
-
+Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los anteriores datos.
 
 
 ## **PREGUNTA 2: Series de tiempo [3 PUNTOS]**
@@ -144,6 +144,10 @@ ts <- read_excel("ts.xlsx")
 View(ts)
 ```
 
+```{r}
+summary(ts)
+```
+Tenemos las variables de año y quakes en la cuál los datos son: minimo, máximo, media, mediana.
 
 Realizar los siguientes análisis y respectivas interpretaciones: 
 
