@@ -206,4 +206,4 @@ ggsave(plot = gg, filename = 'Panthera onca.png', units = 'cm', width = 12, heig
 gg
 ```
 
-
+la gráfica sale extraña pero demuestra que si hay presencia de Panthera onca en el Ecuador.
