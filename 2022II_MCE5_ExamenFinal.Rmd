@@ -57,7 +57,7 @@ En el archivo `"glm.xlsx"` tiene tres datos:
 
 ```{r}
 library(readxl)
-aedes <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/aedes.xlsx")
+aedes <- read_excel("C:/Users/DELL/Desktop/aedes.xlsx")
 View(aedes)
 ```
 
@@ -65,14 +65,14 @@ View(aedes)
 
 ```{r}
 library(readxl)
-leishmania <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/leishmania.xlsx")
+leishmania <- read_excel("C:/Users/DELL/Desktop/leishmania.xlsx")
 View(leishmania)
 ```
 
 - disease: cómo la edad afecta a diferentes características dicotómicas. 
 ```{r}
 library(readxl)
-disease <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/disease.xlsx")
+disease <- read_excel("C:/Users/DELL/Desktop/disease.xlsx")
 View(disease)
 ```
 
@@ -128,15 +128,14 @@ plot(h01)
 4. Planteamiento del modelo. 
 
 ```{r}
-boxplot(aedes$repetition ~ aedes$aedes, ylab = "Población de Zancudos muertos", xlab = "Repetición", fill = aedes$agrochem)
-plot(aedes$repetition, aedes$aedes, ylab = "Repeticion de Agroquimicos", xlab = "Población de Zancudos")
-reg <- lm(aedes$repetition ~ aedes$aedes)
-abline(reg)
 glm1<- glm(aedes ~ repetition, data = aedes, family = poisson)
 # Gráfico de dispersión con línea de ajuste
 plot(aedes$repetition, aedes$aedes, main = "GLM FAMILIA POISSION", xlab = "Repeticiones de Agroquímicos", ylab = "Población de Zancudos Muertos")
-abline(coef(glm1),col="red")
+x_seq <- seq(min(aedes$repetition), max(aedes$repetition), length.out = 100)
+pred_counts <- predict(glm1, newdata = data.frame(repetition = x_seq), type = "response")
+lines(x_seq, pred_counts, col = "purple",lwd=2)
 ```
+
 
 1. Análisis exploratorio. (leishmania)
 
@@ -161,19 +160,38 @@ summary(disease)
 
 ```{r}
 library(ggplot2)
-ggplot(data = disease, aes(x =  age, y = native, 
-                         col = treatment)) + 
+ggplot(data = disease, aes(x =  age, y = recover, 
+                         col = factor(treatment))) + 
        
 geom_point()
 ```
 
 2. Planteamiento de hipótesis.
 
+H0: No existe cambios con la recuperación dependiendo de los años y tratamiento
+H1: Existe cambios con la recuperación dependiendo de los años y tratamiento
+
 3. Análisis de regresión 
+
+```{r}
+h01 <- lm(age ~ disease, data = disease)
+summary(h01)
+plot(h01)
+```
+
 
 4. Planteamiento del modelo. 
 
-5. Validez del modelo.
+```{r}
+boxplot(disease$repetition, disease$disease, ylab = "recover", xlab = "Años", fill = aedes$treatment)
+plot(disease$repetition, disease$disease, ylab = "recover", xlab = "años")
+reg <- lm(disease$repetition ~ disease$disease)
+abline(reg)
+glm1<- glm(disease ~ repetition, data = disease, family = poisson)
+# Gráfico de dispersión con línea de ajuste
+plot(disease$repetition, disease$disease, main = "GLM FAMILIA POISSION", xlab = "años", ylab = "recover")
+abline(coef(glm1),col="red")
+```
 
 Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los anteriores datos.
 
@@ -209,7 +227,7 @@ View(quakes)
 
 ```{r}
 library(readxl)
-hepatitis <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/hepatitis.xlsx")
+hepatitis <- read_excel("C:/Users/DELL/Desktop/hepatitis.xlsx")
 View(hepatitis)
 ```
 
@@ -229,7 +247,7 @@ HEPATITIS
 library(tidyverse)
 library(readr)
 library(dplyr)
-hepatitis <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/hepatitis.xlsx")
+hepatitis <- read_excel("C:/Users/DELL/Desktop/hepatitis.xlsx")
 str(hepatitis)
 summary(hepatitis)
 ```
