@@ -1,7 +1,6 @@
 ---
 title: "Métodos Cuantitativos en Ecología - MCE5"
-subtitle: "EXAMEN FINAL - 2022II"
-author: 'Carpio Ivonne'
+author: "Carpio Ivonne"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -12,6 +11,10 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+subtitle: "EXAMEN FINAL - 2022II"
 ---
 
 ```{r echo = FALSE, results = 'asis'}
@@ -52,9 +55,26 @@ En el archivo `"glm.xlsx"` tiene tres datos:
 
 - aedes: insecticidas utilizados para controlar el número de mosquitos en un experimento. Cada vez que se repite la aplicación del insecticida parece disminuir la cantidad de zancudos vivos.
 
+```{r}
+library(readxl)
+aedes <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/aedes.xlsx")
+View(aedes)
+```
+
 - leishmania: en una infección con leishmania cuando se analiza el tejido qué sucede con la concentración de algunas células y si están o no afectadas. 
 
+```{r}
+library(readxl)
+leishmania <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/leishmania.xlsx")
+View(leishmania)
+```
+
 - disease: cómo la edad afecta a diferentes características dicotómicas. 
+```{r}
+library(readxl)
+disease <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/disease.xlsx")
+View(disease)
+```
 
 Realice los siguientes análisis: 
 
@@ -64,49 +84,74 @@ Realice los siguientes análisis:
 
 - leishmania: glm bayesiano
 
-```{r}
-library(readxl)
-glm <- read_excel("glm.xlsx")
-View(glm)
-```
-
-```{r}
-library(readxl)
-disease <- read_excel("C:/Users/DELL/Downloads/disease.xlsx")
-View(disease)
-```
-
-```{r}
-library(readxl)
-leishmania <- read_excel("C:/Users/DELL/Downloads/leishmania.xlsx")
-View(leishmania)
-```
-
-```{r}
-##Exploración de datos
-library(tidyverse)
-library(readr)
-library(dplyr)
-leishmania <- read_excel("C:/Users/DELL/Downloads/leishmania.xlsx")
-str(leishmania)
-summary(leishmania)
-```
 Podemos ver que en el analisis exploratorio hay variables como: recupera, blast procentaje, affect porcentaje, leuco porcentaje, leuco porcentaje, blast periferia y temperatura  teniendo cada uno un minimo, máximo, media, mediana.
-```{r}
-plot(leishmania)
-```
+
 
 gráfica de la exploración de datos dependiendo de sus variables 
-```{r}
-plot(glm$repetition, glm$aedes)
-```
+
 comparación de aedes y repetition dependiendo de glm
 
 
 Realizar los siguientes análisis y respectivas interpretaciones: 
 
-1. Análisis exploratorio.
+1. Análisis exploratorio. (aedes)
 
+```{r}
+summary(aedes)
+```
+```{r}
+library(ggplot2)
+ggplot(data = aedes, aes(x = repetition, y = aedes, 
+                         col = agrochem)) + 
+       
+geom_point()
+```
+ 
+x= repiticiones de contaminantes (agroquimicos)
+y= población de sancudos muertos 
+com= pintar los contamiantes
+
+2. Planteamiento de hipótesis.
+
+H0 = Los agroquimicos no afectaron a la población de mosquitos
+
+H1 = Los agroquimicos afectaron a la población de mosquitos
+
+3. Análisis de regresión 
+
+```{r}
+h01 <- lm(repetition ~ aedes, data = aedes)
+summary(h01)
+plot(h01)
+```
+
+4. Planteamiento del modelo. 
+
+```{r}
+boxplot(aedes$repetition ~ aedes$aedes, ylab = "Población de Zancudos muertos", xlab = "Repetición", fill = aedes$agrochem)
+plot(aedes$repetition, aedes$aedes, ylab = "Repeticion de Agroquimicos", xlab = "Población de Zancudos")
+reg <- lm(aedes$repetition ~ aedes$aedes)
+abline(reg)
+glm1<- glm(aedes ~ repetition, data = aedes, family = poisson)
+# Gráfico de dispersión con línea de ajuste
+plot(aedes$repetition, aedes$aedes, main = "GLM FAMILIA POISSION", xlab = "Repeticiones de Agroquímicos", ylab = "Población de Zancudos Muertos")
+abline(coef(glm1),col="red")
+```
+
+5. Validez del modelo.
+
+
+
+
+1. Análisis exploratorio. (leishmania)
+
+```{r}
+summary(leishmania)
+```
+
+```{r}
+
+```
 2. Planteamiento de hipótesis.
 
 3. Análisis de regresión 
@@ -116,17 +161,56 @@ Realizar los siguientes análisis y respectivas interpretaciones:
 5. Validez del modelo.
 
 ```{r}
-##Exploración de datos
-library(tidyverse)
-library(readr)
-library(dplyr)
-leishmania <- read_excel("C:/Users/DELL/Downloads/leishmania.xlsx")
-str(leishmania)
-summary(leishmania)
+print(AIC(reg))
+print(glm1$aic)
 ```
+
+comparación de 2 modelos 
+entre menor sea el dato mejor se ajusta a los datos y los describre
+
+1. Análisis exploratorio. (disease)
+
+```{r}
+summary(disease)
+```
+
+```{r}
+library(ggplot2)
+ggplot(data = disease, aes(x =  age, y = native, 
+                         col = treatment)) + 
+       
+geom_point()
+```
+
+2. Planteamiento de hipótesis.
+
+3. Análisis de regresión 
+
+4. Planteamiento del modelo. 
+
+5. Validez del modelo.
 
 Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los anteriores datos.
 
+
+
+1. Análisis exploratorio. (leishmania)
+
+```{r}
+summary(leishmania)
+```
+
+
+
+2. Planteamiento de hipótesis.
+
+3. Análisis de regresión 
+
+4. Planteamiento del modelo. 
+
+5. Validez del modelo.
+
+Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los anteriores datos.
 
 ## **PREGUNTA 2: Series de tiempo [3 PUNTOS]**
 
@@ -138,15 +222,7 @@ En el archivo `"ts.xlsx"` tiene tres datos:
 
 - wildfire: cantidad de eventos de incendios forestales por mes entre 2003 y 2017.
 
-```{r}
-library(readxl)
-ts <- read_excel("ts.xlsx")
-View(ts)
-```
 
-```{r}
-summary(ts)
-```
 Tenemos las variables de año y quakes en la cuál los datos son: minimo, máximo, media, mediana.
 
 Realizar los siguientes análisis y respectivas interpretaciones: 
@@ -185,29 +261,539 @@ Seleccione una especie de planta y una especie de animal; asimismo, dos tipos de
 
 Luego realice un análisis espacial de distribución de la especie en Ecuador continental en base a los datos de presencia del GBIF (use rgbif para descargar la data). Explique el resultado y compare la diferencia entre la salida de los dos modelos. En qué regiones los modelos difieren más en la predicción?   
 
+# Modelo de nicho ecológico para Ceibo
+
+# CARGA DE LIBRERÍAS Y DATOS
+
 ```{r}
-# 4.1 Distribución espacial de especies
-library(rgbif)
+require(pacman)
+pacman::p_load(rnaturalearthdata, extrafont, showtext, rnaturalearth, cptcity, 
 
-library(tidyverse)
-occ = occ_data(scientificName = 'Panthera onca', 
-                limit = 200000, 
-                hasCoordinate = TRUE, 
-                hasGeospatialIssue = FALSE)
+               SSDM, ggspatial, raster, terra, rgbif, tidyverse, sf, sp, 
 
-occ_ecu <- filter(occ$data, country == 'Ecuado')
-shp <- raster::getData('GADM', country = 'ECU', level = 1)
+               geodata, glue, ggpubr, ggrepel, ineq, scales)
+g = gc(reset=T)
+rm(list=ls())
+options(scipen = 999, warn = -1)
 
-gg <- ggplot() +
-  geom_point(data = occ_ecu, aes(x = decimalLongitude, y = decimalLatitude), color = 'black') +
-  geom_polygon(data = shp, aes(x = long, y = lat, group = group), color = 'grey', fill = NA) +
-  coord_fixed(ylim = c(-5, 12.5), xlim = c(-71, -69)) +
-  xlab('Longitud') +
-  ylab('Latitud')
+# load data 
+sps = "Passiflora edulis"
+occr = occ_data(scientificName = sps, limit = 10e5, hasCoordinate = T, 
 
-ggsave(plot = gg, filename = 'Panthera onca.png', units = 'cm', width = 12, height = 16, dpi=300)
-
-gg
+                hasGeospatialIssue = F)
 ```
 
-la gráfica sale extraña pero demuestra que si hay presencia de Panthera onca en el Ecuador.
+# SELECCIÓN DE ÁREA DE ESTUDIO
+
+```{r}
+
+# Selec datafrane from occr object and filter for a country
+
+occr = occr[[2]]
+
+unique(occr$country) %>%  sort()
+
+occr = occr %>%  dplyr::filter(country == "Ecuador")
+
+```
+
+## FILTRACIÓN DE DATOS PARA ECUADOR
+
+```{r}
+
+# VISUALIZACIÓN DE OCURRENCIA 
+
+sps = "Tremarctos ornatus"
+
+occr = occ_data(scientificName = sps, limit = 10e5, hasCoordinate = T, 
+
+                hasGeospatialIssue = F)
+
+#OCURRENCIA 
+
+occr = occr[[2]]
+
+unique(occr$country) %>%  sort()
+
+occr = occr %>%  dplyr::filter(country == "Ecuador")
+```
+
+## DATOS CLIMATOLÓGICOS
+
+```{r}
+
+# shapefiles
+
+wrld = ne_countries(returnclass = "sf", scale = 50)
+
+ecu1 = geodata::gadm(country = "ECU", level = 1, path = "tmpr")
+
+
+
+# COMBINACIÓN DE DATOS CLIMATÓLOGICOS 
+
+bioc = geodata::worldclim_country(country = "ECU", var = "bioc", path = "tmpr")
+
+bioc = terra::crop(bioc, ecu1) %>% terra::mask(., ecu1)
+
+names(bioc) = glue("bioc{1:19}")
+
+```
+
+## ANÁLISIS EXPLORATORIO
+
+```{r}
+
+summary(occr)
+
+#MAPA DE VISUALIZACIÓN DE OCURRENCIAS
+
+plot(ecu1)
+
+points(occr$decimalLongitude, occr$decimalLatitude, pch = 16, col = "blue")
+
+
+
+```
+
+# PREPARACIÓN PARA EL MODELO
+
+```{r}
+
+### Coordenadas y datos climatologicos 
+
+occr1 = occr %>%  dplyr::select(x = decimalLongitude, y = decimalLatitude)
+
+vles = terra::extract(bioc, occr1[,c("x", "y")])
+
+occr1 = cbind(occr1[,c("x", "y")], vles[,-1])
+
+occr1 = as_tibble(occr1)
+
+occr1 = mutate(occr1, pb = 1)
+
+
+
+# FONDO DEL MAPA 
+
+cell = terra::extract(bioc[[1]], occr1[,1:2], cells=T)$cell
+
+duplicated(cell)
+
+mask = bioc[[1]]*0
+
+mask[cell] = NA
+
+back = terra::as.data.frame(mask, xy =T) %>% as_tibble()
+
+back = sample_n(back, size = nrow(occr1)*2, replace = FALSE)
+
+colnames(back)[3] = "pb"
+
+back = mutate(back, pb = 0)
+
+back = cbind(back, terra::extract(bioc, back[,c(1,2)])[,-1])
+
+back = as_tibble(back)
+
+
+
+# Join data 
+
+tble = rbind(occr1, back)
+
+
+
+```
+
+# CONSTRUCCIÓN MODELOS
+
+## Validación modelo GAM con AUC
+
+```{r}
+
+bioc = stack(bioc)
+
+tble = as.data.frame(tble)
+
+
+
+srdf = modelling(algorithm = "GAM", Env = bioc, Occurrences = tble, Pcol = "pb", 
+
+                 Xcol = "x", cv.parm = c(0.75, 0.25), 
+
+                 Ycol = "y", metric = "TSS", select.metric = "AUC")
+
+plot(srdf@projection)
+
+plot(srdf@binary)
+
+srdf@parameters
+
+srdf@name
+
+srdf@variable.importance
+
+as.numeric(srdf@variable.importance) %>% sum()
+
+
+
+rstr = srdf@projection
+
+rstr = terra::rast(rstr)
+
+rslt = terra::as.data.frame(rstr, xy = T) %>%  as_tibble()
+
+
+
+
+
+
+
+```
+
+CONSTRUCCIÓN DEL MAPA GAM
+
+```{r}
+# CONSTRUCCIÓN DEL MAPA
+
+gmap1 = ggplot() +
+
+  geom_tile(data = rslt, aes(x = x, y = y, fill = Projection)) +
+
+  scale_fill_gradientn(colors = cpt(pal = "mpl_inferno", n=10, rev = TRUE)) +
+
+  geom_sf(data = wrld, fill = NA, col = "grey40", lwd=0.1) +
+
+  geom_sf(data = st_as_sf(ecu1), fill = NA, col = "grey40", lwd=0.3) +
+
+  coord_sf(xlim = ext(ecu1)[1:2], ylim = ext(ecu1)[3:4]) +
+
+  labs(x = "Longitud", y = "Latitud", fill = "Puntaje de Idoneidad") +
+
+  ggtitle(label = "Idoneidad para Tremarctos ornatus", subtitle = "Modelo GAM") +
+
+  theme_bw() + 
+
+  theme(text = element_text(family="georg", color = "grey50"), 
+
+        legend.position = "bottom", 
+
+        plot.title = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+
+        plot.subtitle = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+
+        panel.border = element_rect(color = "grey80") ) +
+
+  guides(fill = guide_legend(
+
+    direction = "horizontal", 
+
+    keyheight = unit(1.15, units = "mm"), keywidth = unit(1.15, units = "mm"),
+
+    title.position = "top", title.hjust = 0.5, label.hjust = 0.5, 
+
+    nrow = 1, byrow = T, reverse = F, label.position = "bottom")) +
+
+  annotation_scale(location="bl", width_hint =0.5, text_family = "georg", 
+
+                   text_col = "grey60", text_cex = 0.7 ) +
+
+  annotation_north_arrow(
+
+    location= "tr", which_north = "true",
+
+    pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+
+    style = north_arrow_fancy_orienteering(text_family = "georg", text_col = "grey40"))
+
+```
+
+Validación modelo GLM con AUC
+
+```{r}
+
+bioc = stack(bioc)
+
+tble = as.data.frame(tble)
+
+
+
+srdf1 = modelling(algorithm = "GLM", Env = bioc, Occurrences = tble, Pcol = "pb", 
+
+                 Xcol = "x", cv.parm = c(0.75, 0.25), 
+
+                 Ycol = "y", metric = "TSS", select.metric = "AUC")
+
+plot(srdf@projection)
+
+plot(srdf@binary)
+
+srdf@parameters
+
+srdf@name
+
+srdf@variable.importance
+
+as.numeric(srdf@variable.importance) %>% sum()
+
+
+
+rstr1 = srdf@projection
+
+rstr1 = terra::rast(rstr1)
+
+rslt1 = terra::as.data.frame(rstr1, xy = T) %>%  as_tibble()
+
+```
+
+CONSTRUCCIÓN DEL MAPA GLM
+
+```{r}
+
+# CONSTRUCCIÓN DEL MAPA
+
+gmap = ggplot() +
+
+  geom_tile(data = rslt1, aes(x = x, y = y, fill = Projection)) +
+
+  scale_fill_gradientn(colors = cpt(pal = "mpl_inferno", n=10, rev = TRUE)) +
+
+  geom_sf(data = wrld, fill = NA, col = "grey40", lwd=0.1) +
+
+  geom_sf(data = st_as_sf(ecu1), fill = NA, col = "grey40", lwd=0.3) +
+
+  coord_sf(xlim = ext(ecu1)[1:2], ylim = ext(ecu1)[3:4]) +
+
+  labs(x = "Longitud", y = "Latitud", fill = "Puntaje de Idoneidad") +
+
+  ggtitle(label = "Idoneidad para Tremarctos ornatus", subtitle = "Modelo GLM") +
+
+  theme_bw() + 
+
+  theme(text = element_text(family="georg", color = "grey50"), 
+
+        legend.position = "bottom", 
+
+        plot.title = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+
+        plot.subtitle = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+
+        panel.border = element_rect(color = "grey80") ) +
+
+  guides(fill = guide_legend(
+
+    direction = "horizontal", 
+
+    keyheight = unit(1.15, units = "mm"), keywidth = unit(1.15, units = "mm"),
+
+    title.position = "top", title.hjust = 0.5, label.hjust = 0.5, 
+
+    nrow = 1, byrow = T, reverse = F, label.position = "bottom")) +
+
+  annotation_scale(location="bl", width_hint =0.5, text_family = "georg", 
+
+                   text_col = "grey60", text_cex = 0.7 ) +
+
+  annotation_north_arrow(
+
+    location= "tr", which_north = "true",
+
+    pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+
+    style = north_arrow_fancy_orienteering(text_family = "georg", text_col = "grey40"))
+
+```
+
+# MODELO DE NICHO ECOLÓGICO PARA *PUMA CONCOLOR*
+
+```{r}
+require(pacman)
+pacman::p_load(rnaturalearthdata, extrafont, showtext, rnaturalearth, cptcity, 
+
+               SSDM, ggspatial, raster, terra, rgbif, tidyverse, sf, sp, 
+
+               geodata, glue, ggpubr, ggrepel, ineq, scales)
+g = gc(reset=T)
+rm(list=ls())
+options(scipen = 999, warn = -1)
+
+# load data 
+sps = "Puma concolor"
+occr = occ_data(scientificName = sps, limit = 10e5, hasCoordinate = T, 
+
+                hasGeospatialIssue = F)
+```
+
+### FILTRACIÓN DE DATOS PARA ECUADOR
+
+```{r}
+# VISUALIZACIÓN DE OCURRENCIA 
+
+sps = "Puma concolor"
+
+occrp = occ_data(scientificName = sps, limit = 10e5, hasCoordinate = T, 
+
+                hasGeospatialIssue = F)
+#OCURRENCIA 
+
+occrp = occrp[[2]]
+
+unique(occrp$country) %>%  sort()
+
+occrp = occrp %>%  dplyr::filter(country == "Ecuador")
+```
+
+ANÁLISIS EXPLORATORIO
+
+```{r}
+summary(occrp)
+
+#MAPA DE VISUALIZACIÓN DE OCURRENCIAS
+
+plot(ecu1)
+
+points(occrp$decimalLongitude, occrp$decimalLatitude, pch = 16, col = "blue")
+```
+
+PREPARACIÓN PARA EL MODELO
+
+```{r}
+#OCURRENCIA 
+
+### Coordenadas y datos climatologicos 
+
+occrp = occrp%>%  dplyr::select(x = decimalLongitude, y = decimalLatitude)
+
+vles = terra::extract(bioc, occrp[,c("x", "y")])
+
+occrp = cbind(occrp[,c("x", "y")], vles[,-1])
+
+occrp = as_tibble(occrp)
+
+occrp = mutate(occrp, pb = 1)
+
+
+
+# FONDO DEL MAPA 
+
+cell = terra::extract(bioc[[1]], occrp[,1:2], cells=T)
+
+duplicated(cell)
+
+mask = bioc[[1]]*0
+mask[cell] = NA
+back = terra::as.data.frame(mask, xy =T) %>% as_tibble()
+back = sample_n(back, size = nrow(occrp)*2, replace = FALSE)
+colnames(back)[3] = "pb"
+back = mutate(back, pb = 0)
+back = cbind(back, terra::extract(bioc, back[,c(1,2)])[,-1])
+back = as_tibble(back)
+
+# Join data 
+tble = rbind(occrp, back)
+```
+
+# CONSTRUCCIÓN DE LOS MODLEOS 
+
+### Validación modelo GAM AUC
+
+```{r}
+bioc = stack(bioc)
+tble = as.data.frame(tble)
+srdfp = modelling(algorithm = "GAM", Env = bioc, Occurrences = tble, Pcol = "pb", 
+                 Xcol = "x", cv.parm = c(0.75, 0.25), 
+                 Ycol = "y", metric = "TSS", select.metric = "AUC")
+plot(srdfp@projection)
+plot(srdfp@binary)
+srdfp@parameters
+srdfp@name
+srdfp@variable.importance
+as.numeric(srdfp@variable.importance) %>% sum()
+rstrp = srdf@projection
+rstrp = terra::rast(rstr)
+rsltp = terra::as.data.frame(rstr, xy = T) %>%  as_tibble()
+```
+
+### Construción Mapa con GAM
+
+```{r}
+# CONSTRUCCIÓN DEL MAPA
+gmap2 = ggplot() +
+  geom_tile(data = rsltp, aes(x = x, y = y, fill = Projection)) +
+  scale_fill_gradientn(colors = cpt(pal = "mpl_inferno", n=10, rev = TRUE)) +
+  geom_sf(data = wrld, fill = NA, col = "grey40", lwd=0.1) +
+  geom_sf(data = st_as_sf(ecu1), fill = NA, col = "grey40", lwd=0.3) +
+  coord_sf(xlim = ext(ecu1)[1:2], ylim = ext(ecu1)[3:4]) +
+  labs(x = "Longitud", y = "Latitud", fill = "Puntaje de Idoneidad") +
+  ggtitle(label = "Idoneidad para Puma concolor", subtitle = "Modelo GAM") +
+  theme_bw() + 
+  theme(text = element_text(family="georg", color = "grey50"), 
+        legend.position = "bottom", 
+        plot.title = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+        plot.subtitle = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+        panel.border = element_rect(color = "grey80") ) +
+  guides(fill = guide_legend(
+    direction = "horizontal", 
+    keyheight = unit(1.15, units = "mm"), keywidth = unit(1.15, units = "mm"),
+    title.position = "top", title.hjust = 0.5, label.hjust = 0.5, 
+    nrow = 1, byrow = T, reverse = F, label.position = "bottom")) +
+  annotation_scale(location="bl", width_hint =0.5, text_family = "georg", 
+                   text_col = "grey60", text_cex = 0.7 ) +
+  annotation_north_arrow(
+    location= "tr", which_north = "true",
+    pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+    style = north_arrow_fancy_orienteering(text_family = "georg", text_col = "grey40"))
+```
+
+### VALIDACIÓN MODELO GLM AUC
+
+```{r}
+bioc = stack(bioc)
+tble = as.data.frame(tble)
+srdfpu = modelling(algorithm = "GLM", Env = bioc, Occurrences = tble, Pcol = "pb",
+                 Xcol = "x", cv.parm = c(0.75, 0.25), 
+                 Ycol = "y", metric = "TSS", select.metric = "AUC")
+plot(srdfpu@projection)
+plot(srdfpu@binary)
+srdfpu@parameters
+srdfpu@name
+srdfpu@variable.importance
+as.numeric(srdfpu@variable.importance) %>% sum()
+rstr1pu = srdf@projection
+rstr1pu = terra::rast(rstr1)
+rslt1pu = terra::as.data.frame(rstr1, xy = T) %>%  as_tibble()
+
+```
+
+### CONSTRUCCIÓN  MAPA GLM
+
+```{r}
+# CONSTRUCCIÓN DEL MAPA
+gmap3 = ggplot() +
+  geom_tile(data = rslt1, aes(x = x, y = y, fill = Projection)) +
+  scale_fill_gradientn(colors = cpt(pal = "mpl_inferno", n=10, rev = TRUE)) +
+  geom_sf(data = wrld, fill = NA, col = "grey40", lwd=0.1) +
+  geom_sf(data = st_as_sf(ecu1), fill = NA, col = "grey40", lwd=0.3) +
+  coord_sf(xlim = ext(ecu1)[1:2], ylim = ext(ecu1)[3:4]) +
+  labs(x = "Longitud", y = "Latitud", fill = "Puntaje de Idoneidad") +
+  ggtitle(label = "Idoneidad para Puma concolor", subtitle = "Modelo GLM") +
+  theme_bw() + 
+  theme(text = element_text(family="georg", color = "grey50"), 
+   legend.position = "bottom", 
+        plot.title = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+        plot.subtitle = element_text(hjust = 0.5, face = "bold", color ="grey30"),
+        panel.border = element_rect(color = "grey80") ) +
+  guides(fill = guide_legend(
+    direction = "horizontal", 
+    keyheight = unit(1.15, units = "mm"), keywidth = unit(1.15, units = "mm"),
+    title.position = "top", title.hjust = 0.5, label.hjust = 0.5, 
+    nrow = 1, byrow = T, reverse = F, label.position = "bottom")) +
+  annotation_scale(location="bl", width_hint =0.5, text_family = "georg", 
+                  text_col = "grey60", text_cex = 0.7 ) +
+  annotation_north_arrow(
+    location= "tr", which_north = "true",
+    pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+    style = north_arrow_fancy_orienteering(text_family = "georg", text_col = "grey40"))
+
+```
