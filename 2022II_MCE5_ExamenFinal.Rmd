@@ -138,27 +138,12 @@ plot(aedes$repetition, aedes$aedes, main = "GLM FAMILIA POISSION", xlab = "Repet
 abline(coef(glm1),col="red")
 ```
 
-5. Validez del modelo.
-
-
-
-
 1. Análisis exploratorio. (leishmania)
 
 ```{r}
 summary(leishmania)
 ```
 
-```{r}
-
-```
-2. Planteamiento de hipótesis.
-
-3. Análisis de regresión 
-
-4. Planteamiento del modelo. 
-
-5. Validez del modelo.
 
 ```{r}
 print(AIC(reg))
@@ -200,25 +185,34 @@ Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los
 summary(leishmania)
 ```
 
-
-
-2. Planteamiento de hipótesis.
-
-3. Análisis de regresión 
-
-4. Planteamiento del modelo. 
-
-5. Validez del modelo.
-
-Tenemos datos de máximo, minimo, media, mediana en las mismas variables que los anteriores datos.
-
+```{r}
+library(ggplot2)
+ggplot(data = leishmania, aes(x =  native, y = percent_affect, 
+                         col = temperature)) + 
+       
+geom_point()
+```
 ## **PREGUNTA 2: Series de tiempo [3 PUNTOS]**
 
 En el archivo `"ts.xlsx"` tiene tres datos: 
 
 - quakes: cantidad de eventos de terremotos por cada año.
 
+```{r}
+library(readxl)
+quakes <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/quakes.xlsx")
+View(quakes)
+```
+
+
 - hepatitis: casos de hepatitis por mes entre 2010 y 2017 (acomodar la tabla si es necesario) 
+
+```{r}
+library(readxl)
+hepatitis <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/hepatitis.xlsx")
+View(hepatitis)
+```
+
 
 - wildfire: cantidad de eventos de incendios forestales por mes entre 2003 y 2017.
 
@@ -228,6 +222,27 @@ Tenemos las variables de año y quakes en la cuál los datos son: minimo, máxim
 Realizar los siguientes análisis y respectivas interpretaciones: 
 
 1. Análisis exploratorio: autocorrelación y descomposición, análisis estacional.
+
+HEPATITIS
+
+```{r}
+library(tidyverse)
+library(readr)
+library(dplyr)
+hepatitis <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/hepatitis.xlsx")
+str(hepatitis)
+summary(hepatitis)
+```
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(dplyr)
+hepatitis <- read_excel("C:/Users/DELL/Desktop/EXAMEN RECUPERACIÓN - METODOS/quakes.xlsx")
+str(quakes)
+summary(quakes)
+```
 
 2. ARIMA, SARIMA, ETS, NNAR
 
